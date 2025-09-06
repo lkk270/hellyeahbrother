@@ -6,7 +6,7 @@ import Logo from "./Logo";
 export default function Header() {
 	return (
 		<motion.header
-			className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50"
+			className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10"
 			initial={{ y: -100, opacity: 0 }}
 			animate={{ y: 0, opacity: 1 }}
 			transition={{ duration: 0.8, ease: "easeOut" }}
@@ -26,16 +26,21 @@ export default function Header() {
 					<nav className="hidden md:flex items-center space-x-8">
 						<motion.a
 							href="#products"
-							className="text-sm font-medium text-gray-900 hover:text-gray-600 transition-colors duration-200"
+							className="text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 relative group"
 							whileHover={{ y: -2 }}
 						>
 							Products
+							<motion.div
+								className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300"
+								initial={{ width: 0 }}
+								whileHover={{ width: "100%" }}
+							/>
 						</motion.a>
 					</nav>
 
 					{/* Mobile menu button */}
 					<motion.button
-						className="md:hidden p-2 rounded-md text-gray-900 hover:text-gray-600 transition-colors"
+						className="md:hidden p-2 rounded-md text-white/80 hover:text-white transition-colors"
 						whileHover={{ scale: 1.1 }}
 						whileTap={{ scale: 0.9 }}
 					>

@@ -47,8 +47,14 @@ export default function ProductShowcase() {
 	};
 
 	return (
-		<section id="products" className="py-20 bg-white">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<section id="products" className="py-20 bg-black relative overflow-hidden">
+			{/* Background elements */}
+			<div className="absolute inset-0">
+				<div className="absolute top-1/4 right-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+				<div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-white/3 rounded-full blur-3xl" />
+			</div>
+
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 				{/* Section Header */}
 				<motion.div
 					className="text-center mb-16"
@@ -57,10 +63,10 @@ export default function ProductShowcase() {
 					transition={{ duration: 0.8, ease: "easeOut" }}
 					viewport={{ once: true }}
 				>
-					<h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
+					<h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
 						Preorder Collection
 					</h2>
-					<p className="text-lg text-gray-600 max-w-2xl mx-auto">
+					<p className="text-lg text-gray-300 max-w-2xl mx-auto">
 						Limited edition pieces crafted with attention to detail and
 						uncompromising quality.
 					</p>
@@ -88,46 +94,52 @@ export default function ProductShowcase() {
 				{/* Preorder Modal */}
 				{isPreorderModalOpen && selectedProduct && (
 					<motion.div
-						className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+						className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={() => setIsPreorderModalOpen(false)}
 					>
 						<motion.div
-							className="bg-white rounded-lg p-8 max-w-md w-full"
+							className="bg-black border border-white/20 rounded-lg p-8 max-w-md w-full relative overflow-hidden"
 							initial={{ scale: 0.8, opacity: 0 }}
 							animate={{ scale: 1, opacity: 1 }}
 							exit={{ scale: 0.8, opacity: 0 }}
 							onClick={(e) => e.stopPropagation()}
 						>
-							<h3 className="text-2xl font-bold mb-4">
+							{/* Geometric accent */}
+							<div
+								className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-white/10 to-transparent"
+								style={{ clipPath: "polygon(100% 0, 0 0, 100% 100%)" }}
+							/>
+
+							<h3 className="text-2xl font-bold mb-4 text-white">
 								Preorder {selectedProduct.name}
 							</h3>
-							<p className="text-gray-600 mb-6">
+							<p className="text-gray-300 mb-6">
 								{selectedProduct.description}
 							</p>
-							<div className="text-3xl font-bold mb-6">
+							<div className="text-3xl font-bold mb-6 text-white">
 								{selectedProduct.price}
 							</div>
 
 							<div className="space-y-4">
 								<div>
-									<label className="block text-sm font-medium text-gray-700 mb-2">
+									<label className="block text-sm font-medium text-white mb-2">
 										Email Address
 									</label>
 									<input
 										type="email"
-										className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+										className="w-full px-3 py-2 bg-gray-900 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-white text-white placeholder-gray-400"
 										placeholder="your@email.com"
 									/>
 								</div>
 
 								<div>
-									<label className="block text-sm font-medium text-gray-700 mb-2">
+									<label className="block text-sm font-medium text-white mb-2">
 										Size
 									</label>
-									<select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+									<select className="w-full px-3 py-2 bg-gray-900 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-white text-white">
 										<option>Select Size</option>
 										<option>Small</option>
 										<option>Medium</option>
@@ -140,7 +152,7 @@ export default function ProductShowcase() {
 							<div className="flex space-x-4 mt-6">
 								<button
 									onClick={() => setIsPreorderModalOpen(false)}
-									className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+									className="flex-1 px-4 py-2 border border-white/20 text-white rounded-md hover:bg-white/10 transition-colors"
 								>
 									Cancel
 								</button>
@@ -188,7 +200,7 @@ export default function ProductShowcase() {
 											alert("Failed to submit preorder. Please try again.");
 										}
 									}}
-									className="flex-1 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
+									className="flex-1 px-4 py-2 bg-white text-black rounded-md hover:bg-gray-100 transition-colors font-bold"
 								>
 									Confirm Preorder
 								</button>
