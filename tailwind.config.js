@@ -7,6 +7,10 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+				mono: ['var(--font-ibm-plex-mono)', 'monospace'],
+			},
 			colors: {
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",

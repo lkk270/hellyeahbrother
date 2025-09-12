@@ -1,25 +1,29 @@
-# Hell Yeah Brother
+# Hell Yeah Brother Storefront
 
-A sleek, minimalist e-commerce website built with Next.js, shadcn/ui, and Tailwind CSS. Features a modern design inspired by high-end fashion brands with smooth animations and a clean aesthetic.
+A minimal, modern e-commerce website built with Next.js, Tailwind CSS, shadcn/ui, Stripe, and Neon Database.
 
 ## Features
 
-- 🎨 **Minimalist Design**: Clean, modern interface with smooth animations
-- 🛍️ **Product Showcase**: Preorder functionality for hats and scarves
-- 📱 **Responsive**: Mobile-first design that works on all devices
-- 🎭 **Animations**: Framer Motion powered micro-interactions
-- 🗄️ **Database**: Neon database integration for preorder management
-- 📧 **Contact**: Instagram integration for customer communication
+- **Minimal Design**: Clean, monochrome aesthetic with heavy whitespace
+- **Two Products**: Trucker Hat and Hell-Yeah Button
+- **Stripe Integration**: Secure checkout and payment processing
+- **Cart Management**: Persistent cart with localStorage
+- **SEO Optimized**: JSON-LD schema, meta tags, sitemap
+- **Responsive**: Mobile-first design
+- **Accessibility**: WCAG AA+ compliant
+- **Cookie Policy**: GDPR-compliant cookie management
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 with App Router
+- **Framework**: Next.js 15 (App Router)
 - **Styling**: Tailwind CSS
-- **Components**: shadcn/ui
-- **Animations**: Framer Motion
-- **Database**: Neon (PostgreSQL)
+- **UI Components**: shadcn/ui
+- **Database**: Neon (PostgreSQL) + Drizzle ORM
+- **Payments**: Stripe
+- **Validation**: Zod
 - **Icons**: Lucide React
-- **TypeScript**: Full type safety
+- **Fonts**: Inter, IBM Plex Mono
+- **Notifications**: Sonner
 
 ## Getting Started
 
@@ -27,13 +31,14 @@ A sleek, minimalist e-commerce website built with Next.js, shadcn/ui, and Tailwi
 
 - Node.js 18+ 
 - npm or yarn
-- Neon database account
+- Neon Database account
+- Stripe account
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone <repository-url>
 cd hellyeahbrother
 ```
 
@@ -44,124 +49,144 @@ npm install
 
 3. Set up environment variables:
 ```bash
-cp .env.example .env.local
+cp env.example .env.local
 ```
 
-4. Configure your Neon database:
-   - Create a new project at [Neon](https://neon.tech)
-   - Copy your database URL to `.env.local`
-   - The database schema will be created automatically
+4. Configure your environment variables in `.env.local`:
+```env
+# Database
+DATABASE_URL="postgresql://username:password@ep-xxx.us-east-1.aws.neon.tech/neondb?sslmode=require"
 
-5. Run the development server:
+# Stripe
+STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+
+# App
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key-here"
+```
+
+### Database Setup
+
+1. Generate Drizzle migrations:
+```bash
+npm run db:generate
+```
+
+2. Push schema to database:
+```bash
+npm run db:push
+```
+
+3. Seed the database:
+```bash
+npm run seed
+```
+
+### Stripe Setup
+
+1. Create a Stripe account at [stripe.com](https://stripe.com)
+2. Get your API keys from the Stripe Dashboard
+3. Set up webhook endpoints:
+   - URL: `https://yourdomain.com/api/webhooks/stripe`
+   - Events: `payment_intent.succeeded`, `checkout.session.completed`, `charge.refunded`
+
+### Development
+
+Start the development server:
 ```bash
 npm run dev
 ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Environment Variables
+### Production Build
 
-Create a `.env.local` file with the following variables:
-
-```env
-# Neon Database
-DATABASE_URL=your_neon_database_url_here
-
-# Next.js
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+Build the application:
+```bash
+npm run build
 ```
 
-## Database Schema
-
-The application automatically creates the following table:
-
-```sql
-CREATE TABLE preorders (
-  id SERIAL PRIMARY KEY,
-  product_id VARCHAR(50) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  size VARCHAR(20) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+Start the production server:
+```bash
+npm start
 ```
 
 ## Project Structure
 
 ```
 src/
-├── app/
-│   ├── api/preorder/     # API routes
-│   ├── globals.css       # Global styles
-│   ├── layout.tsx        # Root layout
-│   └── page.tsx          # Home page
-├── components/
-│   ├── ui/               # shadcn/ui components
-│   ├── Header.tsx        # Navigation header
-│   ├── Hero.tsx          # Hero section
-│   ├── Logo.tsx          # Brand logo
-│   ├── ProductCard.tsx   # Product display card
-│   ├── ProductShowcase.tsx # Product grid
-│   └── Footer.tsx        # Footer with Instagram link
-└── lib/
-    └── db.ts             # Database utilities
+├── app/                    # Next.js App Router pages
+│   ├── api/               # API routes
+│   ├── legal/             # Legal pages
+│   ├── products/          # Product pages
+│   └── ...
+├── components/            # React components
+│   └── ui/               # shadcn/ui components
+├── hooks/                # Custom React hooks
+├── lib/                  # Utilities and database
+│   └── db/              # Database schema and connection
+└── ...
 ```
 
-## Customization
+## Database Schema
 
-### Brand Colors
-Update the color scheme in `src/app/globals.css`:
+The application uses the following main tables:
+- `customers` - Customer information
+- `products` - Product catalog
+- `orders` - Order management
+- `order_items` - Order line items
+- `returns` - Return requests
+- `stripe_webhooks` - Webhook event tracking
+- `audit_events` - System audit log
 
-```css
-:root {
-  --primary: 0 0% 9%;        /* Black */
-  --secondary: 0 0% 96.1%;   /* Light gray */
-  /* Add your brand colors */
-}
-```
+## API Routes
 
-### Products
-Modify the products array in `src/components/ProductShowcase.tsx`:
+- `POST /api/create-payment-intent` - Create Stripe payment intent
+- `POST /api/webhooks/stripe` - Handle Stripe webhooks
 
-```typescript
-const products: Product[] = [
-  {
-    id: 'hat-001',
-    name: 'Signature Hat',
-    description: 'Your product description',
-    price: '$89',
-    image: '/images/hat.jpg',
-    isNew: true
-  },
-  // Add more products
-];
-```
+## Environment Variables
 
-### Logo
-Update the logo design in `src/components/Logo.tsx` to match your brand.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | Neon database connection string | Yes |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key | Yes |
+| `STRIPE_SECRET_KEY` | Stripe secret key | Yes |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook secret | Yes |
+| `NEXT_PUBLIC_APP_URL` | Application URL | Yes |
+| `NEXTAUTH_SECRET` | NextAuth secret key | Yes |
 
 ## Deployment
 
 ### Vercel (Recommended)
 
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Add your environment variables in Vercel dashboard
-4. Deploy!
+1. Connect your repository to Vercel
+2. Set environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
 
 ### Other Platforms
 
-The app can be deployed to any platform that supports Next.js:
+The application can be deployed to any platform that supports Next.js:
 - Netlify
 - Railway
-- DigitalOcean App Platform
+- Render
 - AWS Amplify
+
+## Testing
+
+Run the linter:
+```bash
+npm run lint
+```
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Submit a pull request
+4. Test thoroughly
+5. Submit a pull request
 
 ## License
 
@@ -169,4 +194,4 @@ This project is licensed under the MIT License.
 
 ## Support
 
-For support, contact us on Instagram: [@hellyeahbrother](https://instagram.com/hellyeahbrother)
+For support, email support@hellyeahbrother.com or visit our support page.
